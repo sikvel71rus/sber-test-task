@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>ru.ibs.gasu</groupId>
+    <artifactId>base-soap-stub</artifactId>
+    <version>1.0</version>
+    <packaging>war</packaging>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.5.RELEASE</version>
+    </parent>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <cxf.version>3.2.0</cxf.version>
+
+        <db.url>jdbc:oracle:thin:@172.29.227.9:1521/gods.oracledb.lxd</db.url>
+        <db.user.name>gasu</db.user.name>
+        <db.user.password>gasu</db.user.password>
+
+        <hibernate.log.level>ERROR</hibernate.log.level>
+        <spring.log.level>INFO</spring.log.level>
+        <cxf.log.level>INFO</cxf.log.level>
+        <root.log.level>DEBUG</root.log.level>
+
+        <logs.path>logs</logs.path>
+
+    </properties>
+
+    <scm>
+        <connection>scm:git:http://jenkins.lxd/sp/base-soap-stub.git</connection>
+        <developerConnection>scm:git:jenkins.lxd/sp/base-soap-stub.git</developerConnection>
+        <url>http://172.29.227.7/sp/base-soap-stub.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+
+    <profiles>
+        <profile>
+            <id>local</id>
+        </profile>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <logs.path>/u01/logs</logs.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <root.log.level>INFO</root.log.level>
+                <logs.path>/u01/logs</logs.path>
+            </properties>
+        </profile>
+    </profiles>
+
+    <build>
+
+        <finalName>${project.artifactId}-${buildNumber}</finalName>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+<!--            <plugin>-->
+<!--                <groupId>org.jfrog.buildinfo</groupId>-->
+<!--                <artifactId>artifactory-maven-plugin</artifactId>-->
+<!--                <version>2.6.1</version>-->
+<!--                <inherited>false</inherited>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>build-info</id>-->
+<!--                        <goals>-->
+<!--                            <goal>publish</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <deployProperties>-->
+<!--                                <groupId>${project.groupId}</groupId>-->
+<!--                                <artifactId>${project.artifactId}</artifactId>-->
+<!--                                <version>${project.version}</version>-->
+<!--                            </deployProperties>-->
+<!--                            <publisher>-->
+<!--                                <contextUrl>http://repo.gasu-development.ibs.ru/artifactory</contextUrl>-->
+<!--                                <username>dev</username>-->
+<!--                                <password>developer</password>-->
+<!--                                <repoKey>libs-release-local</repoKey>-->
+<!--                                <snapshotRepoKey>libs-snapshot-local</snapshotRepoKey>-->
+<!--                            </publisher>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jetty</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web-services</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+
+        <!-- JPA -->
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-starter-data-jpa</artifactId>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-legacy</artifactId>
+            <version>2.0.0.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-envers</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>apache-jsp</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.vladmihalcea/hibernate-types-52 -->
+        <dependency>
+            <groupId>com.vladmihalcea</groupId>
+            <artifactId>hibernate-types-52</artifactId>
+            <version>2.3.4</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Oracle JDBC driver -->
+<!--        <dependency>-->
+<!--            <groupId>com.oracle</groupId>-->
+<!--            <artifactId>ojdbc6</artifactId>-->
+<!--            <version>10</version>-->
+<!--        </dependency>-->
+
+        <!-- Tests -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+
+</project>
