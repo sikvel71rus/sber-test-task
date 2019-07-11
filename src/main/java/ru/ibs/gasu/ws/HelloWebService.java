@@ -1,5 +1,7 @@
 package ru.ibs.gasu.ws;
 
+import ru.ibs.gasu.domain.Message;
+
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
@@ -12,6 +14,7 @@ import javax.jws.WebService;
 public interface HelloWebService {
 
     @WebMethod
-    @WebResult(name = "helloResponse")  String hello(@WebParam(name = "userName") String userName);
+    @WebResult(name = "helloResponse")
+    Message hello(@WebParam(name = "userName") String userName);
 
 }
